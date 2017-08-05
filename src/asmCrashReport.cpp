@@ -1,17 +1,19 @@
 // References:
 //    https://spin.atomicobject.com/2013/01/13/exceptions-stack-traces-c/
 //    http://theorangeduck.com/page/printing-stack-trace-mingw
+//    https://en.wikipedia.org/wiki/Name_mangling
 
 // In order for this to work w/mingw:
 //    - you need to link with Dbghelp.dll
 //    - you need to turn on debug symbols with "-g"
+//    - you need to have the addr2line tool available (I use the one from cygwin)
 
 // In order for this to work w/macOS:
 //    - you need to turn on C/CXX debug symbols with "-g"
 //    - you need to turn off C/CXX "Position Independent Executable" with "-fno-pie"
 //    - you need to turn off linker "Position Independent Executable" with "-Wl,-no_pie"
 //    - it helps to turn off optimization with "-O0"
-//    - it helps to never omit frame pointers with "-fno-omit-frame-pointer"
+//    - it helps to always include frame pointers with "-fno-omit-frame-pointer"
 //
 // Andy Maloney <asmaloney@gmail.com>
 
@@ -21,12 +23,14 @@
 #include <QDateTime>
 #include <QDir>
 #include <QProcess>
+#include <QRegularExpression>
 #include <QStandardPaths>
 #include <QStringList>
 #include <QTextStream>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
+#include <cxxabi.h>
 #include <imagehlp.h>
 #else
 #include <err.h>
@@ -42,48 +46,12 @@ namespace asmCrashReport
    static QString sProgramName;        // the full path to the executable (which we need to resolve symbols)
    static QString sCrashReportDirPath; // where to store the crash reports
 
+   // Note that we are looking for GCC-style name mangles
+   // See: https://en.wikipedia.org/wiki/Name_mangling#How_different_compilers_mangle_the_same_functions
+   static QRegularExpression  sSymbolMatching("^.*(_Z[^ ]+).*$");
+
    static logWrittenCallback  sLogWrittenCallback; // function to call after we've written the log file
-
-   // Resolve symbol name & source location
-   QString _addr2line( const QString &inProgramName, int inFrameNumber, void const * const inAddr )
-   {
-      QString  command;
-
-      // map the address to the line in the code
-#ifdef Q_OS_MAC
-      command = QStringLiteral( "atos" );
-
-      command += QStringLiteral( " -o \"%1\"" ).arg( inProgramName );
-      command += QStringLiteral( " -arch x86_64" );
-      command += QStringLiteral( " 0x%1" ).arg( quintptr( inAddr ), 0, 16 );
-#else
-      command = QStringLiteral( "%1/tools/addr2line" ).arg( QCoreApplication::applicationDirPath() );
-
-      command += QStringLiteral( " -f -p" );
-      command += QStringLiteral( " -e %1" ).arg( inProgramName );
-      command += QStringLiteral( " 0x%1" ).arg( quintptr( inAddr ), 0, 16 );
-#endif
-
-      QProcess *myProcess = new QProcess;
-
-      myProcess->setProcessChannelMode( QProcess::MergedChannels );
-      myProcess->start( command, QIODevice::ReadOnly );
-
-      QString  frameInfo;
-
-      if ( !myProcess->waitForFinished() )
-      {
-         frameInfo = QStringLiteral( "* Error running command\n   %1\n   %2" ).arg( command, myProcess->errorString() );
-      }
-      else
-      {
-         frameInfo = QStringLiteral( "[%1] %2" ).arg( QString::number( inFrameNumber ), myProcess->readAll().constData() );
-      }
-
-      delete myProcess;
-
-      return frameInfo.trimmed();
-   }
+   static QProcess            *sProcess = nullptr; // process used to capture output of address mapping tool
 
    void  _writeLog( const QString &inSignal, const QStringList &inFrameInfoList )
    {
@@ -102,6 +70,7 @@ namespace asmCrashReport
                                                                              QCoreApplication::applicationName() );
 
       QFile file( cFileName );
+      bool  fileWritten = false;
 
       if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
       {
@@ -111,19 +80,42 @@ namespace asmCrashReport
          {
             stream << data << endl;
          }
+
+         fileWritten = true;
       }
 
       if ( sLogWrittenCallback != nullptr )
       {
-         (*sLogWrittenCallback)( cFileName );
+         (*sLogWrittenCallback)( cFileName, fileWritten );
       }
+   }
+
+   // Resolve symbol name & source location
+   QString _addr2line( const QString &inProgramName, void const * const inAddr )
+   {
+      const QString  cAddrStr = QStringLiteral( "0x%1" ).arg( quintptr( inAddr ), 16, 16, QChar( '0' ) );
+
+#ifdef Q_OS_MAC
+      const QString  cCommand = QStringLiteral( "atos -o \"%1\" -arch x86_64 %2" ).arg( inProgramName, cAddrStr );
+#else
+      const QString  cCommand = QStringLiteral( "%1/tools/addr2line -f -p -e %2 %3" ).arg( QCoreApplication::applicationDirPath(), inProgramName, cAddrStr );
+#endif
+
+      sProcess->start( cCommand, QIODevice::ReadOnly );
+
+      if ( !sProcess->waitForFinished() )
+      {
+         return QStringLiteral( "* Error running command\n   %1\n   %2" ).arg( cCommand, sProcess->errorString() );
+      }
+
+      const QString  cLocationStr = QString( sProcess->readAll() ).trimmed();
+
+      return (cLocationStr == cAddrStr) ? QString() : cLocationStr;
    }
 
 #ifdef Q_OS_WIN
    QStringList _stackTrace( CONTEXT* context )
    {
-      QStringList frameList;
-
       HANDLE process = GetCurrentProcess();
       HANDLE thread = GetCurrentThread();
 
@@ -144,10 +136,12 @@ namespace asmCrashReport
       stackFrame.AddrFrame.Offset = context->Ebp;
       stackFrame.AddrFrame.Mode = AddrModeFlat;
 #else
+      // see http://theorangeduck.com/page/printing-stack-trace-mingw
 #error You need to define the stack frame layout for this architecture
 #endif
 
-      int   frameNumber = 0;
+      QStringList frameList;
+      int         frameNumber = 0;
 
       while ( StackWalk64(
                  image, process, thread,
@@ -155,7 +149,29 @@ namespace asmCrashReport
                  SymFunctionTableAccess64, SymGetModuleBase64, NULL )
               )
       {
-         frameList += _addr2line( sProgramName, frameNumber, (void*)stackFrame.AddrPC.Offset );
+         QString  locationStr = _addr2line( sProgramName, (void*)stackFrame.AddrPC.Offset );
+
+         // match the mangled name and demangle if we can
+         QRegularExpressionMatch match = sSymbolMatching.match( locationStr );
+
+         const QString  cSymbol( match.captured( 1 ) );
+
+         if ( !cSymbol.isNull() )
+         {
+            int   demangleStatus = 0;
+
+            const char  *cFunctionName = abi::__cxa_demangle( cSymbol.toLatin1().constData(), nullptr, nullptr, &demangleStatus);
+
+            if ( demangleStatus == 0 )
+            {
+               locationStr.replace( cSymbol, cFunctionName );
+            }
+         }
+
+         frameList += QStringLiteral( "[%1] 0x%2 %3" )
+                      .arg( QString::number( frameNumber ) )
+                      .arg( quintptr( (void*)stackFrame.AddrPC.Offset ), 16, 16, QChar( '0' ) )
+                      .arg( locationStr );
 
          ++frameNumber;
       }
@@ -221,11 +237,11 @@ namespace asmCrashReport
 
       if ( inExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_STACK_OVERFLOW )
       {
-         frameInfoList += _addr2line( sProgramName, 0, (void*)inExceptionInfo->ContextRecord->Eip );
+         frameInfoList += _addr2line( sProgramName, (void*)inExceptionInfo->ContextRecord->Eip );
       }
       else
       {
-         frameInfoList = _stackTrace( inExceptionInfo->ContextRecord );
+         frameInfoList += _stackTrace( inExceptionInfo->ContextRecord );
       }
 
       _writeLog( cExceptionType, frameInfoList );
@@ -233,11 +249,12 @@ namespace asmCrashReport
       return EXCEPTION_EXECUTE_HANDLER;
    }
 #else
-   QStringList _stackTrace()
-   {
-      constexpr int MAX_STACK_FRAMES = 64;
-      void          *sStackTraces[MAX_STACK_FRAMES];
+   constexpr int  MAX_STACK_FRAMES = 64;
+   static void    *sStackTraces[MAX_STACK_FRAMES];
+   static uint8_t sAlternateStack[SIGSTKSZ];
 
+   QStringList  _stackTrace()
+   {
       int   traceSize = backtrace( sStackTraces, MAX_STACK_FRAMES );
       char  **messages = backtrace_symbols( sStackTraces, traceSize );
 
@@ -245,9 +262,30 @@ namespace asmCrashReport
       QStringList frameList;
       int         frameNumber = 0;
 
-      for ( int i = 3; i < (traceSize - 1); ++i )
+      frameList.reserve( traceSize );
+
+      for ( int i = 2; i < (traceSize - 1); ++i )
       {
-         frameList += _addr2line( sProgramName, frameNumber, sStackTraces[i] );
+         QString  message( messages[i] );
+
+         // match the mangled name if possible and replace with file & line number
+         QRegularExpressionMatch match = sSymbolMatching.match( message );
+
+         const QString  cSymbol( match.captured( 1 ) );
+
+         if ( !cSymbol.isNull() )
+         {
+            QString  locationStr = _addr2line( sProgramName, sStackTraces [i] );
+
+            if ( !locationStr.isEmpty() )
+            {
+               int   matchStart = match.capturedStart( 1 );
+
+               message.replace( matchStart, message.length() - matchStart, locationStr );
+            }
+         }
+
+         frameList += message;
 
          ++frameNumber;
       }
@@ -336,9 +374,7 @@ namespace asmCrashReport
    void _posixSetupSignalHandler()
    {
       // setup alternate stack
-      static uint8_t alternateStack[SIGSTKSZ];
-
-      stack_t ss{ static_cast<void*>(alternateStack), SIGSTKSZ, 0 };
+      stack_t ss{ static_cast<void*>(sAlternateStack), SIGSTKSZ, 0 };
 
       if ( sigaltstack( &ss, nullptr ) != 0 )
       {
@@ -353,7 +389,7 @@ namespace asmCrashReport
       sigemptyset( &sigAction.sa_mask );
 
 #ifdef __APPLE__
-      // for some reason backtrace() doesn't work on macOS when we use an alternate stack
+      // backtrace() doesn't work on macOS when we use an alternate stack
       sigAction.sa_flags = SA_SIGINFO;
 #else
       sigAction.sa_flags = SA_SIGINFO | SA_ONSTACK;
@@ -380,7 +416,16 @@ namespace asmCrashReport
                                                                          QCoreApplication::applicationName() );
       }
 
+      sSymbolMatching.optimize();
+
       sLogWrittenCallback = inLogWrittenCallback;
+
+      if ( sProcess == nullptr )
+      {
+         sProcess = new QProcess;
+
+         sProcess->setProcessChannelMode( QProcess::MergedChannels );
+      }
 
 #ifdef Q_OS_WIN
       SetUnhandledExceptionFilter( _winExceptionHandler );

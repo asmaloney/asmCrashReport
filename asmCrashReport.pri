@@ -1,7 +1,6 @@
 
 CONFIG (release, release|debug) {
-    message( 'Enabling asmCrashReport & forcing debug symbols' )
-    message( ' Use ASM_CRASH_REPORT to wrap crash report code' )
+    message( 'Enabling asmCrashReport and including debug symbols' )
 
     DEFINES += ASM_CRASH_REPORT
 
@@ -15,9 +14,12 @@ CONFIG (release, release|debug) {
     SOURCES += \
         $$PWD/src/asmCrashReport.cpp
 
-    win32 {
-        QMAKE_CFLAGS_RELEASE += -g
-        QMAKE_CXXFLAGS_RELEASE += -g
+    win32-g++* {
+        QMAKE_CFLAGS_RELEASE -= -O2
+        QMAKE_CXXFLAGS_RELEASE -= -O2
+
+        QMAKE_CFLAGS_RELEASE += -g -O0
+        QMAKE_CXXFLAGS_RELEASE += -g -O0
         QMAKE_LFLAGS_RELEASE =
 
         LIBS += "-L$$PWD/Win/WinDebug" -lDbghelp
@@ -34,5 +36,5 @@ CONFIG (release, release|debug) {
 }
 
 CONFIG (debug, release|debug) {
-    message( 'NOTE: asmCrashReport only valid for release builds' )
+    message( 'NOTE: asmCrashReport is only valid for release builds' )
 }
