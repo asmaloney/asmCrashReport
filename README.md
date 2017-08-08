@@ -119,7 +119,7 @@ This code might work on Linux too since the code path for macOS should be POSIX 
 
 More Information
 ==
-See the post [Qt Crash Reporting For MinGW 32 (Windows) and Clang (macOS)](https://asmaloney.com/2017/08/code/qt-crash-reporting-for-mingw-32-windows-and-clang-macos) for details.
+See the post [Crash Reporting For MinGW 32 (Windows) and Clang (macOS) With Qt](https://asmaloney.com/2017/08/code/crash-reporting-for-mingw-32-windows-and-clang-macos-with-qt/) for details.
 
 07 August 2017  
 Andy Maloney  
