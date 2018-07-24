@@ -83,6 +83,7 @@ namespace asmCrashReport
 
          fileWritten = true;
       }
+      file.close();
 
       if ( sLogWrittenCallback != nullptr )
       {
@@ -96,12 +97,14 @@ namespace asmCrashReport
       const QString  cAddrStr = QStringLiteral( "0x%1" ).arg( quintptr( inAddr ), 16, 16, QChar( '0' ) );
 
 #ifdef Q_OS_MAC
-      const QString  cCommand = QStringLiteral( "atos -o \"%1\" -arch x86_64 %2" ).arg( inProgramName, cAddrStr );
+      const QString  cCommand = QStringLiteral("atos");
+      const QStringList lArgs = QStringList() << inProgramName << "-arch" << "x86_64" << cAddrStr;
 #else
-      const QString  cCommand = QStringLiteral( "%1/tools/addr2line -f -p -e %2 %3" ).arg( QCoreApplication::applicationDirPath(), inProgramName, cAddrStr );
+      const QString  cCommand = QStringLiteral("%1/tools/addr2line").arg(QCoreApplication::applicationDirPath());
+      const QStringList lArgs = QStringList() << "-f" << "-p" << "-e" << inProgramName << cAddrStr;
 #endif
 
-      sProcess->start( cCommand, QIODevice::ReadOnly );
+      sProcess->start( cCommand, lArgs, QIODevice::ReadOnly );
 
       if ( !sProcess->waitForFinished() )
       {
