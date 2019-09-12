@@ -98,7 +98,7 @@ namespace asmCrashReport
 #ifdef Q_OS_MAC
       const QString  cCommand = QStringLiteral( "atos -o \"%1\" -arch x86_64 %2" ).arg( inProgramName, cAddrStr );
 #else
-      const QString  cCommand = QStringLiteral( "%1/tools/addr2line -f -p -e %2 %3" ).arg( QCoreApplication::applicationDirPath(), inProgramName, cAddrStr );
+      const QString  cCommand = QStringLiteral( "%1/tools/addr2line -f -p -s -e %2 %3" ).arg( QCoreApplication::applicationDirPath(), inProgramName, cAddrStr );
 #endif
 
       sProcess->start( cCommand, QIODevice::ReadOnly );
