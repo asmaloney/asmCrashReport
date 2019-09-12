@@ -119,7 +119,7 @@ namespace asmCrashReport
       HANDLE process = GetCurrentProcess();
       HANDLE thread = GetCurrentThread();
 
-      SymInitialize( process, 0, true );
+      SymInitialize( process, nullptr, true );
 
       STACKFRAME64 stackFrame;
       memset( &stackFrame, 0, sizeof( STACKFRAME64 ) );
@@ -145,11 +145,11 @@ namespace asmCrashReport
 
       while ( StackWalk64(
                  image, process, thread,
-                 &stackFrame, context, NULL,
-                 SymFunctionTableAccess64, SymGetModuleBase64, NULL )
+                 &stackFrame, context, nullptr,
+                 SymFunctionTableAccess64, SymGetModuleBase64, nullptr )
               )
       {
-         QString  locationStr = _addr2line( sProgramName, (void*)stackFrame.AddrPC.Offset );
+         QString  locationStr = _addr2line( sProgramName, reinterpret_cast<void*>(stackFrame.AddrPC.Offset) );
 
          // match the mangled name and demangle if we can
          QRegularExpressionMatch match = sSymbolMatching.match( locationStr );
@@ -170,7 +170,7 @@ namespace asmCrashReport
 
          frameList += QStringLiteral( "[%1] 0x%2 %3" )
                       .arg( QString::number( frameNumber ) )
-                      .arg( quintptr( (void*)stackFrame.AddrPC.Offset ), 16, 16, QChar( '0' ) )
+                      .arg( quintptr( reinterpret_cast<void*>(stackFrame.AddrPC.Offset) ), 16, 16, QChar( '0' ) )
                       .arg( locationStr );
 
          ++frameNumber;
@@ -237,7 +237,7 @@ namespace asmCrashReport
 
       if ( inExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_STACK_OVERFLOW )
       {
-         frameInfoList += _addr2line( sProgramName, (void*)inExceptionInfo->ContextRecord->Eip );
+         frameInfoList += _addr2line( sProgramName, reinterpret_cast<void*>(inExceptionInfo->ContextRecord->Eip) );
       }
       else
       {
