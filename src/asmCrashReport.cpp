@@ -137,7 +137,14 @@ namespace asmCrashReport
       stackFrame.AddrFrame.Mode = AddrModeFlat;
 #else
       // see http://theorangeduck.com/page/printing-stack-trace-mingw
-#error You need to define the stack frame layout for this architecture
+// #error You need to define the stack frame layout for this architecture
+            image = IMAGE_FILE_MACHINE_AMD64;
+            stackFrame.AddrPC.Offset = context->Rip;
+            stackFrame.AddrPC.Mode = AddrModeFlat;
+            stackFrame.AddrFrame.Offset = context->Rsp;
+            stackFrame.AddrFrame.Mode = AddrModeFlat;
+            stackFrame.AddrStack.Offset = context->Rsp;
+            stackFrame.AddrStack.Mode = AddrModeFlat;
 #endif
 
       QStringList frameList;
@@ -237,7 +244,12 @@ namespace asmCrashReport
 
       if ( inExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_STACK_OVERFLOW )
       {
+          // https://stackoverflow.com/a/38019482
+#ifdef _M_IX86
          frameInfoList += _addr2line( sProgramName, reinterpret_cast<void*>(inExceptionInfo->ContextRecord->Eip) );
+#else
+         frameInfoList += _addr2line( sProgramName, reinterpret_cast<void*>(inExceptionInfo->ContextRecord->Rip) );
+#endif
       }
       else
       {
