@@ -136,15 +136,15 @@ namespace asmCrashReport
       stackFrame.AddrFrame.Offset = context->Ebp;
       stackFrame.AddrFrame.Mode = AddrModeFlat;
 #elif _M_X64
-            image = IMAGE_FILE_MACHINE_AMD64;
-            stackFrame.AddrPC.Offset = context->Rip;
-            stackFrame.AddrPC.Mode = AddrModeFlat;
-            stackFrame.AddrFrame.Offset = context->Rsp;
-            stackFrame.AddrFrame.Mode = AddrModeFlat;
-            stackFrame.AddrStack.Offset = context->Rsp;
-            stackFrame.AddrStack.Mode = AddrModeFlat;
+      image = IMAGE_FILE_MACHINE_AMD64;
+      stackFrame.AddrPC.Offset = context->Rip;
+      stackFrame.AddrPC.Mode = AddrModeFlat;
+      stackFrame.AddrFrame.Offset = context->Rsp;
+      stackFrame.AddrFrame.Mode = AddrModeFlat;
+      stackFrame.AddrStack.Offset = context->Rsp;
+      stackFrame.AddrStack.Mode = AddrModeFlat;
 #else
-    // see http://theorangeduck.com/page/printing-stack-trace-mingw
+     // see http://theorangeduck.com/page/printing-stack-trace-mingw
 #error You need to define the stack frame layout for this architecture
 #endif
 
@@ -248,8 +248,10 @@ namespace asmCrashReport
           // https://stackoverflow.com/a/38019482
 #ifdef _M_IX86
          frameInfoList += _addr2line( sProgramName, reinterpret_cast<void*>(inExceptionInfo->ContextRecord->Eip) );
-#else
+#elif _M_X64
          frameInfoList += _addr2line( sProgramName, reinterpret_cast<void*>(inExceptionInfo->ContextRecord->Rip) );
+#else
+#error You need to define for this architecture
 #endif
       }
       else
