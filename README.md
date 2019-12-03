@@ -58,11 +58,17 @@ typedef void (*logWrittenCallback)( const QString &inLogFileName, bool inSuccess
 
 Windows
 ==
-Windows needs to be able to find the **addr2line** command line tool. I use the one from [Cygwin](https://www.cygwin.com/).
+Windows needs to be able to find the **addr2line** command line tool.
 
 Currently, asmCrashReporter will look for this in a tools directory next to the executable (see *asmCrashReport.cpp*'s **_addr2line()** function).
 
-When sending your build to a user, you will need to include several DLLs with the exe to make it work. The *tools* directory (or whatever you change it to) should contain:
+cygwin
+===
+I use **addr2line** from [Cygwin](https://www.cygwin.com/).
+
+When sending your build to a user, you will need to include some DLLs alongside the exe to make it work.
+
+The *tools* directory (or whatever you change it to) should contain:
 
 ```
 -rwxrwx---+ 1 Administrators None  934931 Nov 21  2015 addr2line.exe
@@ -73,6 +79,11 @@ When sending your build to a user, you will need to include several DLLs with th
 ```
 
 These DLLs may be found in your Cygwin install's *bin* directory.
+
+MinGW
+===
+
+The prebuilt MinGW Qt installers include **addr2line** in the *bin* directory. It may require other DLLs in order to work on the target machine. (As mentioned above, I use cygwin, so I'm not sure what is required here.)
 
 Example Logs
 ==
@@ -108,7 +119,7 @@ EXCEPTION_INT_DIVIDE_BY_ZERO
 
 Pull Requests
 ==
-Issues and pull requests welcome! 
+Issues and pull requests welcome!
 
 Notes
 ==
@@ -121,6 +132,6 @@ More Information
 ==
 See the post [Crash Reporting For MinGW 32 (Windows) and Clang (macOS) With Qt](https://asmaloney.com/2017/08/code/crash-reporting-for-mingw-32-windows-and-clang-macos-with-qt/) for details.
 
-07 August 2017  
-Andy Maloney  
+07 August 2017
+Andy Maloney
 https://asmaloney.com
