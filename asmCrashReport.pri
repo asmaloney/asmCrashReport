@@ -15,6 +15,14 @@ CONFIG (release, release|debug) {
         $$PWD/src/asmCrashReport.cpp
 
     win32-g++* {
+
+        CONFIG += file_copies
+        ADDR2LINE = $$system(where addr2line)
+        # https://stackoverflow.com/a/54162789
+        addr2line.files = $$ADDR2LINE
+        addr2line.path = $$OUT_PWD/release/tools
+        COPIES += addr2line
+
         QMAKE_CFLAGS_RELEASE -= -O2
         QMAKE_CXXFLAGS_RELEASE -= -O2
 
