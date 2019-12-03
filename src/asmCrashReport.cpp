@@ -82,6 +82,8 @@ namespace asmCrashReport
          }
 
          fileWritten = true;
+
+         file.close();
       }
 
       if ( sLogWrittenCallback != nullptr )
