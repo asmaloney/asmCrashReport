@@ -17,7 +17,7 @@
 //
 // Andy Maloney <asmaloney@gmail.com>
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -33,9 +33,9 @@
 #include <cxxabi.h>
 #include <imagehlp.h>
 #else
+#include <csignal>
 #include <err.h>
 #include <execinfo.h>
-#include <signal.h>
 #endif
 
 #include "asmCrashReport.h"

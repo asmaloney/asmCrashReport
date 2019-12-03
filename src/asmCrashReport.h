@@ -9,7 +9,7 @@ namespace asmCrashReport {
    /// Function signature for a callback after the log is written.
    /// @param inLogFileName The full path to the log file which was written.
    /// @param inSuccess Whether the file was successfully written.
-   typedef void (*logWrittenCallback)( const QString &inLogFileName, bool inSuccess );
+   using logWrittenCallback = void (*)(const QString &, bool);
 
    ///! Set a signal handler to capture stack trace to a log file.
    ///
