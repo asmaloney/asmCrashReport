@@ -135,9 +135,7 @@ namespace asmCrashReport
       stackFrame.AddrStack.Mode = AddrModeFlat;
       stackFrame.AddrFrame.Offset = context->Ebp;
       stackFrame.AddrFrame.Mode = AddrModeFlat;
-#else
-      // see http://theorangeduck.com/page/printing-stack-trace-mingw
-// #error You need to define the stack frame layout for this architecture
+#elif _M_X64
             image = IMAGE_FILE_MACHINE_AMD64;
             stackFrame.AddrPC.Offset = context->Rip;
             stackFrame.AddrPC.Mode = AddrModeFlat;
@@ -145,6 +143,9 @@ namespace asmCrashReport
             stackFrame.AddrFrame.Mode = AddrModeFlat;
             stackFrame.AddrStack.Offset = context->Rsp;
             stackFrame.AddrStack.Mode = AddrModeFlat;
+#else
+    // see http://theorangeduck.com/page/printing-stack-trace-mingw
+#error You need to define the stack frame layout for this architecture
 #endif
 
       QStringList frameList;
