@@ -144,7 +144,7 @@ namespace asmCrashReport
       stackFrame.AddrStack.Offset = context->Rsp;
       stackFrame.AddrStack.Mode = AddrModeFlat;
 #else
-     // see http://theorangeduck.com/page/printing-stack-trace-mingw
+      // see http://theorangeduck.com/page/printing-stack-trace-mingw
 #error You need to define the stack frame layout for this architecture
 #endif
 
@@ -251,7 +251,7 @@ namespace asmCrashReport
 #elif _M_X64
          frameInfoList += _addr2line( sProgramName, reinterpret_cast<void*>(inExceptionInfo->ContextRecord->Rip) );
 #else
-#error You need to define for this architecture
+#error You need to implement the call to _addr2line for this architecture
 #endif
       }
       else
@@ -317,7 +317,7 @@ namespace asmCrashReport
    void _posixSignalHandler( int inSig, siginfo_t *inSigInfo, void *inContext ) __attribute__ ((noreturn));
    void _posixSignalHandler( int inSig, siginfo_t *inSigInfo, void *inContext )
    {
-      Q_UNUSED( inContext );
+      Q_UNUSED( inContext )
 
       const QString  cSignalType = [] ( int sig, int inSignalCode ) {
          switch( sig )
