@@ -139,6 +139,7 @@ namespace asmCrashReport
       stackFrame.AddrFrame.Mode = AddrModeFlat;
 #elif _M_X64
       image = IMAGE_FILE_MACHINE_AMD64;
+
       stackFrame.AddrPC.Offset = context->Rip;
       stackFrame.AddrPC.Mode = AddrModeFlat;
       stackFrame.AddrFrame.Offset = context->Rsp;
@@ -315,7 +316,7 @@ namespace asmCrashReport
       return frameList;
    }
 
-   // prtotype to prevent warning about not returning
+   // prototype to prevent warning about not returning
    void _posixSignalHandler( int inSig, siginfo_t *inSigInfo, void *inContext ) __attribute__ ((noreturn));
    void _posixSignalHandler( int inSig, siginfo_t *inSigInfo, void *inContext )
    {
