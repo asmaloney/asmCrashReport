@@ -1,7 +1,7 @@
 #include <QApplication>
 #include <QMessageBox>
 
-#include <assert.h>
+#include <cassert>
 
 #ifdef ASM_CRASH_REPORT
 #include "asmCrashReport.h"
@@ -10,24 +10,26 @@
 class crashTest
 {
    public:
-      void  crashMe() { function1(); }
+      void  crashMe() { _function1(); }
 
    private:
-      void  divideByZero( int val )
+      // The purpose of all the private methods is just to provide a slightly longer call stack
+
+      void  _divideByZero( int val )
       {
          int   foo = val / 0;
       }
 
-      void  function2( int val )
+      void  _function2( int val )
       {
          ++val;
 
-         divideByZero( val );
+         _divideByZero( val );
       }
 
-      void  function1()
+      void  _function1()
       {
-         function2( 41 );
+         _function2( 41 );
       }
 };
 
