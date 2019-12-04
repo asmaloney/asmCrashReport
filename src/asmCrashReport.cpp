@@ -98,16 +98,37 @@ namespace asmCrashReport
       const QString  cAddrStr = QStringLiteral( "0x%1" ).arg( quintptr( inAddr ), 16, 16, QChar( '0' ) );
 
 #ifdef Q_OS_MAC
-      const QString  cCommand = QStringLiteral( "atos -o \"%1\" -arch x86_64 %2" ).arg( inProgramName, cAddrStr );
+      // Uses atos
+      const QString  cProgram = QStringLiteral( "atos" );
+
+      const QStringList  cArguments = {
+         "-o", inProgramName,
+         "-arch", "x86_64",
+         cAddrStr
+      };
 #else
-      const QString  cCommand = QStringLiteral( "%1/tools/addr2line -f -p -s -e %2 %3" ).arg( QCoreApplication::applicationDirPath(), inProgramName, cAddrStr );
+      // Uses addr2line
+      const QString  cProgram = QStringLiteral( "%1/tools/addr2line" ).arg( QCoreApplication::applicationDirPath() );
+
+      const QStringList  cArguments = {
+         "-f",
+         "-p",
+         "-s",
+         "-e", inProgramName,
+         cAddrStr
+      };
 #endif
 
-      sProcess->start( cCommand, QIODevice::ReadOnly );
+      sProcess->setProgram( cProgram );
+      sProcess->setArguments( cArguments );
+      sProcess->start( QIODevice::ReadOnly );
 
       if ( !sProcess->waitForFinished() )
       {
-         return QStringLiteral( "* Error running command\n   %1\n   %2" ).arg( cCommand, sProcess->errorString() );
+         return QStringLiteral( "* Error running command\n   %1 %2\n   %3" ).arg(
+                  sProcess->program(),
+                  sProcess->arguments().join( ' ' ),
+                  sProcess->errorString() );
       }
 
       const QString  cLocationStr = QString( sProcess->readAll() ).trimmed();
