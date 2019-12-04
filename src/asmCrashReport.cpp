@@ -93,7 +93,7 @@ namespace asmCrashReport
    }
 
    // Resolve symbol name & source location
-   QString _addr2line( const QString &inProgramName, void const * const inAddr )
+   QString _addressToLine( const QString &inProgramName, void const * const inAddr )
    {
       const QString  cAddrStr = QStringLiteral( "0x%1" ).arg( quintptr( inAddr ), 16, 16, QChar( '0' ) );
 
@@ -250,9 +250,9 @@ namespace asmCrashReport
       {
           // https://stackoverflow.com/a/38019482
 #ifdef _M_IX86
-         frameInfoList += _addr2line( sProgramName, reinterpret_cast<void*>(inExceptionInfo->ContextRecord->Eip) );
+         frameInfoList += _addressToLine( sProgramName, reinterpret_cast<void*>(inExceptionInfo->ContextRecord->Eip) );
 #elif _M_X64
-         frameInfoList += _addr2line( sProgramName, reinterpret_cast<void*>(inExceptionInfo->ContextRecord->Rip) );
+         frameInfoList += _addressToLine( sProgramName, reinterpret_cast<void*>(inExceptionInfo->ContextRecord->Rip) );
 #else
 #error You need to implement the call to _addr2line for this architecture
 #endif
@@ -293,7 +293,7 @@ namespace asmCrashReport
 
          if ( !cSymbol.isNull() )
          {
-            QString  locationStr = _addr2line( sProgramName, sStackTraces [i] );
+            QString  locationStr = _addressToLine( sProgramName, sStackTraces[i] );
 
             if ( !locationStr.isEmpty() )
             {
