@@ -181,7 +181,7 @@ namespace asmCrashReport
                  SymFunctionTableAccess64, SymGetModuleBase64, nullptr )
               )
       {
-         QString  locationStr = _addr2line( sProgramName, reinterpret_cast<void*>(stackFrame.AddrPC.Offset) );
+         QString  locationStr = _addressToLine( sProgramName, reinterpret_cast<void*>(stackFrame.AddrPC.Offset) );
 
          // match the mangled name and demangle if we can
          QRegularExpressionMatch match = sSymbolMatching.match( locationStr );
@@ -275,7 +275,7 @@ namespace asmCrashReport
 #elif _M_X64
          frameInfoList += _addressToLine( sProgramName, reinterpret_cast<void*>(inExceptionInfo->ContextRecord->Rip) );
 #else
-#error You need to implement the call to _addr2line for this architecture
+#error You need to implement the call to _addressToLine for this architecture
 #endif
       }
       else
