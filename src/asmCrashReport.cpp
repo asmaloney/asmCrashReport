@@ -358,6 +358,7 @@ namespace asmCrashReport
    void _posixSignalHandler( int inSig, siginfo_t *inSigInfo, void *inContext ) __attribute__ ((noreturn));
    void _posixSignalHandler( int inSig, siginfo_t *inSigInfo, void *inContext )
    {
+      Q_UNUSED( inContext )
 
       const QString  cSignalType = [] ( int sig, int inSignalCode ) {
          switch( sig )
