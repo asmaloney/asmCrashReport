@@ -25,6 +25,21 @@ CONFIG (release, release|debug) {
         LIBS += "-L$$PWD/Win/WinDebug" -lDbghelp
     }
 
+    linux {
+        QMAKE_CFLAGS_RELEASE -= -O2
+        QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO -= -O2
+        QMAKE_CXXFLAGS_RELEASE -= -O2
+        QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO -= -O2
+
+        QMAKE_CFLAGS_RELEASE += -g -fno-pie -fno-omit-frame-pointer -O0
+        QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO += -fno-pie -fno-omit-frame-pointer -O0
+        QMAKE_CXXFLAGS_RELEASE += -g -fno-pie -fno-omit-frame-pointer -O0
+        QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO += -fno-pie -fno-omit-frame-pointer -O0
+
+        QMAKE_LFLAGS_RELEASE  += -rdynamic
+        LIBS += -ldl
+    }
+
     mac {
         QMAKE_CFLAGS_RELEASE -= -O2
         QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO -= -O2
