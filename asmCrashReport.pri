@@ -1,6 +1,6 @@
 
 CONFIG (release, release|debug) {
-    message( 'Enabling asmCrashReport and including debug symbols' )
+    !build_pass:message( 'Enabling asmCrashReport and including debug symbols' )
 
     DEFINES += ASM_CRASH_REPORT
 
