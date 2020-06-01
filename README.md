@@ -1,4 +1,7 @@
 asmCrashReport
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 ==
 
 Provides a simple way to get stack trace information from crashes when using the [MinGW](http://www.mingw.org/) 32-bit or macOS clang compilers for [Qt](https://www.qt.io/)-based applications.
@@ -135,3 +138,22 @@ See the post [Crash Reporting For MinGW 32 (Windows) and Clang (macOS) With Qt](
 07 August 2017
 Andy Maloney
 https://asmaloney.com
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://asmaloney.com"><img src="https://avatars0.githubusercontent.com/u/391371?v=4" width="100px;" alt=""/><br /><sub><b>Andy Maloney</b></sub></a><br /><a href="https://github.com/asmaloney/asmCrashReport/commits?author=asmaloney" title="Code">💻</a> <a href="https://github.com/asmaloney/asmCrashReport/commits?author=asmaloney" title="Documentation">📖</a> <a href="#example-asmaloney" title="Examples">💡</a> <a href="#maintenance-asmaloney" title="Maintenance">🚧</a> <a href="#projectManagement-asmaloney" title="Project Management">📆</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
