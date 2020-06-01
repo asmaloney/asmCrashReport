@@ -27,6 +27,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "PSlava",
+      "name": "PSlava",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/13217353?v=4",
+      "profile": "https://github.com/PSlava",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
