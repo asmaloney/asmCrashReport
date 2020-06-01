@@ -17,6 +17,16 @@
         "maintenance",
         "projectManagement"
       ]
+    },
+    {
+      "login": "huseyinkozan",
+      "name": "Hüseyin Kozan",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/807234?v=4",
+      "profile": "http://huseyinkozan.com.tr/",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
