@@ -137,6 +137,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://asmaloney.com"><img src="https://avatars0.githubusercontent.com/u/391371?v=4" width="100px;" alt=""/><br /><sub><b>Andy Maloney</b></sub></a><br /><a href="https://github.com/asmaloney/asmCrashReport/commits?author=asmaloney" title="Code">💻</a> <a href="https://github.com/asmaloney/asmCrashReport/commits?author=asmaloney" title="Documentation">📖</a> <a href="#example-asmaloney" title="Examples">💡</a> <a href="#maintenance-asmaloney" title="Maintenance">🚧</a> <a href="#projectManagement-asmaloney" title="Project Management">📆</a></td>
+    <td align="center"><a href="http://huseyinkozan.com.tr/"><img src="https://avatars1.githubusercontent.com/u/807234?v=4" width="100px;" alt=""/><br /><sub><b>Hüseyin Kozan</b></sub></a><br /><a href="https://github.com/asmaloney/asmCrashReport/commits?author=huseyinkozan" title="Code">💻</a> <a href="https://github.com/asmaloney/asmCrashReport/commits?author=huseyinkozan" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/PSlava"><img src="https://avatars3.githubusercontent.com/u/13217353?v=4" width="100px;" alt=""/><br /><sub><b>PSlava</b></sub></a><br /><a href="https://github.com/asmaloney/asmCrashReport/commits?author=PSlava" title="Code">💻</a></td>
   </tr>
 </table>
 
