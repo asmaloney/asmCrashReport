@@ -1,13 +1,13 @@
-asmCrashReport
-==
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
+# asmCrashReport
 Provides a simple way to get stack trace information from crashes when using the [MinGW](http://www.mingw.org/) 32-bit or macOS clang compilers for [Qt](https://www.qt.io/)-based applications.
 
 This was made to fit my [purposes](https://asmaloney.com/2017/08/code/qt-crash-reporting-for-mingw-32-windows-and-clang-macos), but I think it is general enough to be useful to others.
 
-Usage
-==
-
+## Usage
 There is a complete example included in this repo.
 
 In your .pro file, you need to include the asmCrashreport.pri file. e.g.:
@@ -56,14 +56,12 @@ The callback can be used to show a message to the user about where to find the l
 typedef void (*logWrittenCallback)( const QString &inLogFileName, bool inSuccess );
 ```
 
-Windows
-==
+## Windows
 Windows needs to be able to find the **addr2line** command line tool.
 
 Currently, asmCrashReporter will look for this in a tools directory next to the executable (see *asmCrashReport.cpp*'s **_addr2line()** function).
 
-cygwin
-===
+### cygwin
 I use **addr2line** from [Cygwin](https://www.cygwin.com/).
 
 When sending your build to a user, you will need to include some DLLs alongside the exe to make it work.
@@ -80,13 +78,10 @@ The *tools* directory (or whatever you change it to) should contain:
 
 These DLLs may be found in your Cygwin install's *bin* directory.
 
-MinGW
-===
-
+### MinGW
 The prebuilt MinGW Qt installers include **addr2line** in the *bin* directory. It may require other DLLs in order to work on the target machine. (As mentioned above, I use cygwin, so I'm not sure what is required here.)
 
-Example Logs
-==
+## Example Logs
 macOS (clang):
 ```
 asmCrashReportExample v1.0.0
@@ -117,21 +112,36 @@ EXCEPTION_INT_DIVIDE_BY_ZERO
 [5] 0x0000000000404592 ?? at qtmain_win.cpp:?
 ```
 
-Pull Requests
-==
+## Pull Requests
 Issues and pull requests welcome!
 
-Notes
-==
+## Notes
 
 If anyone knows why the macOS version doesn't get the first frame correct in the example I'd love to hear from you!
 
 This code might work on Linux too since the code path for macOS should be POSIX compliant, though I haven't tried it. It could also be extended to handle MSVC compiles (or maybe it already does!), but I don't use that compiler so I can't test it.
 
-More Information
-==
+## More Information
 See the post [Crash Reporting For MinGW 32 (Windows) and Clang (macOS) With Qt](https://asmaloney.com/2017/08/code/crash-reporting-for-mingw-32-windows-and-clang-macos-with-qt/) for details.
 
 07 August 2017
 Andy Maloney
 https://asmaloney.com
+
+## Contributors
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://asmaloney.com"><img src="https://avatars0.githubusercontent.com/u/391371?v=4" width="100px;" alt=""/><br /><sub><b>Andy Maloney</b></sub></a><br /><a href="https://github.com/asmaloney/asmCrashReport/commits?author=asmaloney" title="Code">💻</a> <a href="https://github.com/asmaloney/asmCrashReport/commits?author=asmaloney" title="Documentation">📖</a> <a href="#example-asmaloney" title="Examples">💡</a> <a href="#maintenance-asmaloney" title="Maintenance">🚧</a> <a href="#projectManagement-asmaloney" title="Project Management">📆</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
