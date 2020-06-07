@@ -36,6 +36,9 @@
 #include <csignal>
 #include <err.h>
 #include <execinfo.h>
+#endif
+
+#ifdef Q_OS_LINUX
 #include <dlfcn.h>
 #endif
 
@@ -336,8 +339,7 @@ namespace asmCrashReport
             if ( !locationStr.isEmpty() )
             {
                int   matchStart = match.capturedStart( 1 );
-
-               message.replace( matchStart-1, message.length() - matchStart+1, locationStr );
+               message.replace( matchStart, message.length() - matchStart, locationStr );
             }
          }
 
