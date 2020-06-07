@@ -124,10 +124,10 @@ asmCrashReportTest v1.0.0
 Caught SIGFPE: (integer divide by zero)
 
 /lib/x86_64-linux-gnu/libpthread.so.0(+0x13f40) [0x7f5fc497bf40]
-/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTestcrashTest::_divideByZero(int) у main.cpp:32 (discriminator 6)
-/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTestcrashTest::_function2(int) у main.cpp:40
-/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTestcrashTest::_function1() у main.cpp:45
-/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTestcrashTest::divideByZero() у main.cpp:14
+/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTest(crashTest::_divideByZero(int) у main.cpp:32 (discriminator 6)
+/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTest(crashTest::_function2(int) у main.cpp:40
+/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTest(crashTest::_function1() у main.cpp:45
+/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTest(crashTest::divideByZero() у main.cpp:14
 /home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTest(main+0x157) [0x558bdea937f4]
 /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xeb) [0x7f5fc4596b6b]
 ```
