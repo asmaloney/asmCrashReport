@@ -1,5 +1,4 @@
-#ifndef ASMCRASHREPORT_H
-#define ASMCRASHREPORT_H
+#pragma once
 
 #include <QString>
 
@@ -11,7 +10,7 @@ namespace asmCrashReport {
    /// @param inSuccess Whether the file was successfully written.
    using logWrittenCallback = void (*)(const QString &, bool);
 
-   ///! Set a signal handler to capture stack trace to a log file.
+   /// Set a signal handler to capture stack trace to a log file.
    ///
    /// @param inCrashReportDirPath Path to directory to write our crash report to.
    ///   If not set, it will use Desktop/<App Name> Crash Logs/
@@ -20,5 +19,3 @@ namespace asmCrashReport {
    void  setSignalHandler( const QString &inCrashReportDirPath = QString(), logWrittenCallback inLogWrittenCallback = nullptr );
 
 }
-
-#endif
