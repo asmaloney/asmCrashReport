@@ -1,13 +1,13 @@
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
+[![GitHub](https://img.shields.io/github/license/asmaloney/asmCrashReport)](LICENSE)
 
 # asmCrashReport
-Provides a simple way to get stack trace information from crashes when using the [MinGW](http://www.mingw.org/) 32-bit or macOS clang compilers for [Qt](https://www.qt.io/)-based applications.
+
+Provides a simple way to get stack trace information from crashes when using the [MinGW](https://en.wikipedia.org/wiki/MinGW) 32-bit or macOS clang compilers for [Qt](https://www.qt.io/)-based applications.
 
 This was made to fit my [purposes](https://asmaloney.com/2017/08/code/qt-crash-reporting-for-mingw-32-windows-and-clang-macos), but I think it is general enough to be useful to others.
 
 ## Usage
+
 There is a complete example included in this repo.
 
 In your .pro file, you need to include the asmCrashreport.pri file. e.g.:
@@ -17,6 +17,7 @@ if ( !include( ../asmCrashReport.pri ) ) {
     error( Could not find the asmCrashReport.pri file. )
 }
 ```
+
 This will define **ASM_CRASH_REPORT** for the preprocessor and modify the C/CXX and linker flags to include the debug symbols properly.
 
 In your main.cpp, include the header:
@@ -27,7 +28,8 @@ In your main.cpp, include the header:
 #endif
 ```
 
-In your *main()* function, set your signal handler *after* you have declared your **QApplication** and set the application name and version number:
+In your _main()_ function, set your signal handler _after_ you have declared your **QApplication** and set the application name and version number:
+
 ```cpp
 QApplication  app( argc, argv );
 
@@ -42,6 +44,7 @@ app.setApplicationVersion( QStringLiteral( "1.0.0" ) );
 ```
 
 **asmCrashReport::setSignalHandler** has the following prototype:
+
 ```cpp
 // inCrashReportDirPath is the path to directory to write our crash report to. If this is not set, it will use Desktop/<App Name> Crash Logs/
 // inLogWrittenCallback is a callback that will be called after the log file is written
@@ -57,16 +60,18 @@ typedef void (*logWrittenCallback)( const QString &inLogFileName, bool inSuccess
 ```
 
 ## Windows
+
 Windows needs to be able to find the **addr2line** command line tool.
 
-Currently, asmCrashReporter will look for this in a tools directory next to the executable (see *asmCrashReport.cpp*'s **_addr2line()** function).
+Currently, asmCrashReporter will look for this in a tools directory next to the executable (see _asmCrashReport.cpp_'s **\_addr2line()** function).
 
 ### cygwin
+
 I use **addr2line** from [Cygwin](https://www.cygwin.com/).
 
 When sending your build to a user, you will need to include some DLLs alongside the exe to make it work.
 
-The *tools* directory (or whatever you change it to) should contain:
+The _tools_ directory (or whatever you change it to) should contain:
 
 ```
 -rwxrwx---+ 1 Administrators None  934931 Nov 21  2015 addr2line.exe
@@ -76,13 +81,16 @@ The *tools* directory (or whatever you change it to) should contain:
 -rwxrwx---+ 1 Administrators None   85011 Mar  3 16:45 cygz.dll
 ```
 
-These DLLs may be found in your Cygwin install's *bin* directory.
+These DLLs may be found in your Cygwin install's _bin_ directory.
 
 ### MinGW
-The prebuilt MinGW Qt installers include **addr2line** in the *bin* directory. It may require other DLLs in order to work on the target machine. (As mentioned above, I use cygwin, so I'm not sure what is required here.)
+
+The prebuilt MinGW Qt installers include **addr2line** in the _bin_ directory. It may require other DLLs in order to work on the target machine. (As mentioned above, I use cygwin, so I'm not sure what is required here.)
 
 ## Example Logs
+
 macOS (clang):
+
 ```
 asmCrashReportExample v1.0.0
 07 Aug 2017 @ 09:42:38
@@ -97,7 +105,9 @@ Caught SIGFPE: (integer divide by zero)
 7   asmCrashReportExample               0x00000001000083de main + 206
 8   libdyld.dylib                       0x00007fffaca33235 start + 1
 ```
+
 Windows (MinGW32):
+
 ```
 asmCrashReportExample v1.0.0
 07 Aug 2017 @ 13:48:22
@@ -113,6 +123,7 @@ EXCEPTION_INT_DIVIDE_BY_ZERO
 ```
 
 ## Pull Requests
+
 Issues and pull requests welcome!
 
 ## Notes
@@ -122,28 +133,9 @@ If anyone knows why the macOS version doesn't get the first frame correct in the
 This code might work on Linux too since the code path for macOS should be POSIX compliant, though I haven't tried it. It could also be extended to handle MSVC compiles (or maybe it already does!), but I don't use that compiler so I can't test it.
 
 ## More Information
+
 See the post [Crash Reporting For MinGW 32 (Windows) and Clang (macOS) With Qt](https://asmaloney.com/2017/08/code/crash-reporting-for-mingw-32-windows-and-clang-macos-with-qt/) for details.
 
 07 August 2017
 Andy Maloney
 https://asmaloney.com
-
-## Contributors
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><a href="https://asmaloney.com"><img src="https://avatars0.githubusercontent.com/u/391371?v=4" width="100px;" alt=""/><br /><sub><b>Andy Maloney</b></sub></a><br /><a href="https://github.com/asmaloney/asmCrashReport/commits?author=asmaloney" title="Code">💻</a> <a href="https://github.com/asmaloney/asmCrashReport/commits?author=asmaloney" title="Documentation">📖</a> <a href="#example-asmaloney" title="Examples">💡</a> <a href="#maintenance-asmaloney" title="Maintenance">🚧</a> <a href="#projectManagement-asmaloney" title="Project Management">📆</a></td>
-    <td align="center"><a href="http://huseyinkozan.com.tr/"><img src="https://avatars1.githubusercontent.com/u/807234?v=4" width="100px;" alt=""/><br /><sub><b>Hüseyin Kozan</b></sub></a><br /><a href="https://github.com/asmaloney/asmCrashReport/commits?author=huseyinkozan" title="Code">💻</a> <a href="https://github.com/asmaloney/asmCrashReport/commits?author=huseyinkozan" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/PSlava"><img src="https://avatars3.githubusercontent.com/u/13217353?v=4" width="100px;" alt=""/><br /><sub><b>PSlava</b></sub></a><br /><a href="https://github.com/asmaloney/asmCrashReport/commits?author=PSlava" title="Code">💻</a></td>
-  </tr>
-</table>
-
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
