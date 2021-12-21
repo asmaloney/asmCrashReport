@@ -121,6 +121,21 @@ EXCEPTION_INT_DIVIDE_BY_ZERO
 [4] 0x0000000000403388 qMain(int, char**) at C:\dev\asmCrashReport\build-example-Qt_5_9_1_MinGW_32bit/../example/main.cpp:61
 [5] 0x0000000000404592 ?? at qtmain_win.cpp:?
 ```
+Linux (GCC 64bit):
+```
+asmCrashReportTest v1.0.0
+04 янв. 2020 @ 22:46:22
+
+Caught SIGFPE: (integer divide by zero)
+
+/lib/x86_64-linux-gnu/libpthread.so.0(+0x13f40) [0x7f5fc497bf40]
+/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTest(crashTest::_divideByZero(int) у main.cpp:32 (discriminator 6)
+/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTest(crashTest::_function2(int) у main.cpp:40
+/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTest(crashTest::_function1() у main.cpp:45
+/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTest(crashTest::divideByZero() у main.cpp:14
+/home/pavelk.ru/Projects/asmCrashReport/build-test-Desktop_Qt_5_12_3_GCC_64bit-Release/asmCrashReportTest(main+0x157) [0x558bdea937f4]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xeb) [0x7f5fc4596b6b]
+```
 
 ## Pull Requests
 
